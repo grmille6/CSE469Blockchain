@@ -18,6 +18,8 @@ class State(Enum):
 class Blockchain:
 
     RECORD_SIZE = 144
+    def __init__(self):
+        return
                 
     def _write_starting_block(self):
         """

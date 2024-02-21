@@ -9,7 +9,7 @@ def main():
 
     args = parser.parse_args()
 
-    blockchain = Blockchain()
+    blockchain = blockchain.Blockchain()
 
     if args.action == 'add':
         if args.item_id:
