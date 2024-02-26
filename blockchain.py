@@ -19,8 +19,19 @@ class Blockchain:
 
     RECORD_SIZE = 144
     def __init__(self):
-        return
-                
+        """
+        Initializes the blockchain and creates the INITIAL block if necessary.
+        """
+        file_path = os.getenv("BCHOC_FILE_PATH", "C:\\Projects\\CSE469 Project\\CSE469\\chain.dat")
+
+        if not os.path.isfile(file_path):
+            self._write_starting_block()
+        elif self._check_for_initial():
+            self.previous_hash = self._get_last_hash()
+        else:
+            # if the file exists but there's no initial block
+            raise Exception("Blockchain file exists without an INITIAL block.")
+
     def _write_starting_block(self):
         """
         Writes the initial block when the new file is created
@@ -154,6 +165,39 @@ class Blockchain:
         except Exception as e:
             print(f"Failed to write block: {e}")
             return False
+        
+
+    def add_block(self, data): #used to add, remove, or checkout based on the action
+        action = data["action"]
+        item_id = data["item_id"]
+
+        case_id = data["case_id"]
+
+        dat = f"Item {item_id}" #formatted string
+
+        if (action == "add"): 
+            state = str(State.CHECKED_IN) #state of a newly added item, converts enum to string
+            outcome = self._write_block(case_id, item_id, state, dat)
+            if (outcome == True):
+                return True
+            else: 
+                return False
+        elif (action == "remove"): #means we have to create a new block with the updated state
+            block = self._get_specific_block(item_id) #get block that matches item_id
+            if (block and block["state"] == "CHECKEDIN"): 
+                new_state = str(State.DISPOSED) #state to signify blockchain is invalidating this block
+                case_id = block["case_id"]
+                dat = f"Item {item_id}"
+                outcome = self._write_block(case_id, item_id, new_state, dat)
+                if (outcome == True):
+                    return True
+                else: 
+                    return False
+        elif(action =="checkout"):
+            print("checkout")
+
+        return None
+
 
     def _calculate_previous_hash(self, file_path):
         """
@@ -408,15 +452,3 @@ class Blockchain:
         last_block_hash = self._calculate_block_hash(last_block)
 
         return last_block_hash
-
-    def __init__(self):
-        """
-        Creates the INITIAL block
-        """
-        file_path = os.getenv("BCHOC_FILE_PATH", "C:\\Projects\\CSE469 Project\\CSE469\\chain.dat")
-
-        if not os.path.isfile(self.file_path):
-            self._write_starting_block()
-        #If there is already something go get it
-        elif self._check_for_initial():
-            self.previous_hash = self._get_last_hash()

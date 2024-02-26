@@ -1,34 +1,42 @@
-import blockchain
+#!/usr/bin/env python3
+from blockchain import Blockchain
 import argparse
 
 def main():
     parser = argparse.ArgumentParser(description='Blockchain Chain of Custody Management System')
     parser.add_argument('action', choices=['add', 'checkout', 'show', 'remove', 'init', 'verify'], help='Action to perform on the blockchain')
     parser.add_argument('-i', '--item_id', help='Item ID for the blockchain operation')
+    parser.add_argument ('-c', '--case_id', help= 'Case ID for the blockchain operation')
     parser.add_argument('-p', '--password', help='Password for blockchain verification')
 
     args = parser.parse_args()
 
-    blockchain = blockchain.Blockchain()
-
+    blockchain = Blockchain() #creates instance of blockchain structure which automatically calls init function
     if args.action == 'add':
         if args.item_id:
-            data = {"action": "add", "item_id": args.item_id}
+            data = {"action": "add", "case_id": args.case_id, "item_id": args.item_id}
             blockchain.add_block(data)
-            print(f"Added block for item {args.item_id} to the blockchain.")
+            outcome = blockchain.add_block(data)
+            if (outcome == True):
+                print(f"Checked out item {args.item_id} from the blockchain.")
+            else: 
+                print("Block add failed")
         else:
-            print("Item ID is required for 'add' action.")
+            print("Item ID is required for 'checkout' action.")
 
     elif args.action == 'checkout':
         if args.item_id:
             data = {"action": "checkout", "item_id": args.item_id}
-            blockchain.add_block(data)
-            print(f"Checked out item {args.item_id} from the blockchain.")
+            outcome = blockchain.add_block(data)
+            if (outcome == True):
+                print(f"Checked out item {args.item_id} from the blockchain.")
+            else: 
+                print("Block checkout failed")
         else:
             print("Item ID is required for 'checkout' action.")
 
     elif args.action == 'show':
-        for block in blockchain.chain:
+        for block in blockchain._read_blocks():
             print(f"Block {block.index} - Hash: {block.hash}")
             print("Timestamp:", block.timestamp)
             print("Data:", block.data)
@@ -39,13 +47,22 @@ def main():
         if args.item_id:
             data = {"action": "remove", "item_id": args.item_id}
             blockchain.add_block(data)
-            print(f"Removed item {args.item_id} from the blockchain.")
+            outcome = blockchain.add_block(data)
+            if (outcome == True):
+                print(f"Removed item {args.item_id} from the blockchain.")
+            else: 
+                print("Block remove failed")
         else:
             print("Item ID is required for 'remove' action.")
 
     elif args.action == 'init':
-        print("Initialized a new blockchain.")
+        initial = blockchain._check_for_initial()
+        if initial == True:
+            print("Initialized a new blockchain.")
+        else : 
+            print("Blochain initialization failed")
         # Optionally, you might want to handle initialization logic here.
+        #checks for initial block to verify blokchain is setup properly
 
     elif args.action == 'verify':
         if args.password:
