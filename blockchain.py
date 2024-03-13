@@ -30,7 +30,7 @@ class Blockchain:
             self.previous_hash = self._get_last_hash()
         else:
             # if the file exists but there's no initial block
-            raise Exception("Blockchain file exists without an INITIAL block.")
+            raise Exception ("Blockchain file exists without an INITIAL block.")
 
     def _write_starting_block(self):
         """
@@ -270,7 +270,7 @@ class Blockchain:
             - A hash (or list of hashes in case of "DUPLICATE PARENT"): blocks involved in the error.
         """
         # Initially, assume blockchain is valid
-        error = "VALID"
+        error = "CLEAN"
         error_hashes = []
 
         # Use the _read_blocks method to get all blocks
@@ -308,6 +308,9 @@ class Blockchain:
         num_transactions = len(blocks)
 
         # Depending on your blockchain's structure, you may need to adjust how errors are detected and how hashes are calculated or stored.
+
+        print ("Transactions in blockchain:", num_transactions)
+        print("State of blockchain:", error)
         return num_transactions, error, error_hashes
 
     def _verify_remove_is_final(self):

@@ -82,14 +82,7 @@ def main():
         #checks for initial block to verify blokchain is setup properly
 
         elif args.action == 'verify':
-            if args.password:
-            # Verify the blockchain integrity using the password (example)
-                if verify_blockchain_integrity(blockchain, args.password):
-                    print("Blockchain integrity verified.")
-                else:
-                    print("Blockchain integrity verification failed.")
-            else:
-                print("Password is required for 'verify' action.")
+            blockchain._verify_checksums()
 
         else :
             print("invalid command")

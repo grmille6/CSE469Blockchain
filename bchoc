@@ -10,12 +10,12 @@ def parse(command):
     parser.add_argument ('-c', '--case_id', help= 'Case ID for the blockchain operation')
     parser.add_argument('-p', '--password', help='Password for blockchain verification')
 
-    try:
-        # Split the command string into arguments and parse them
+    try: #if argparse encounters an invalid input it exits the system so if an invalid command is passed we have to 
+        #raise an exception and handle accordingly so the program keeps prompting the user for input
         args = parser.parse_args(command.split())
         return args
     except SystemExit:
-        # Handle invalid input
+        # This handles invalid input so program doesnt exit
         print("Invalid command or arguments. Please try again.")
         return None
 
@@ -82,14 +82,7 @@ def main():
         #checks for initial block to verify blokchain is setup properly
 
         elif args.action == 'verify':
-            if args.password:
-            # Verify the blockchain integrity using the password (example)
-                if verify_blockchain_integrity(blockchain, args.password):
-                    print("Blockchain integrity verified.")
-                else:
-                    print("Blockchain integrity verification failed.")
-            else:
-                print("Password is required for 'verify' action.")
+            blockchain._verify_checksums()
 
         else :
             print("invalid command")
