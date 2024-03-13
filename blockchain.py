@@ -63,6 +63,7 @@ class Blockchain:
 
             # Write the initial block to the file
             with open(file_path, 'wb') as f:
+                print("created")
                 f.write(block_data)
 
     def _read_blocks(self):
@@ -102,7 +103,9 @@ class Blockchain:
                     #Convert fields to appropriate types
                     previous_hash = previous_hash.hex()
                     timestamp = datetime.utcfromtimestamp(timestamp)
-                    case_id = UUID(bytes=case_id)
+                    selected_bytes = case_id[:16] #uuid only takes a length of 16 so we have to select 16 first bytes
+                    case_id = UUID(bytes=selected_bytes)
+                    case_id_hex = case_id.hex
                     item_id = int.from_bytes(item_id, byteorder=sys.byteorder)
                     state = state.decode('utf-8').strip('\x00')
                     
@@ -110,7 +113,7 @@ class Blockchain:
                     blocks.append({
                         'previous_hash': previous_hash,
                         'timestamp': timestamp,
-                        'case_id': case_id,
+                        'case_id': case_id_hex,
                         'item_id': item_id,
                         'state': state,
                         'data_length': data_length,
