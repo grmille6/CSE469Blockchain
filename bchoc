@@ -73,11 +73,12 @@ def main():
                 print("Item ID is required for 'remove' action.")
 
         elif args.action == 'init':
-            initial = blockchain._check_for_initial()
-            if initial == True:
-                print("Initialized a new blockchain.")
-            else : 
-                print("Blochain initialization failed")
+            # initial = blockchain._check_for_initial()
+            # if initial == True:
+            #     print("Initialized a new blockchain.")
+            # else : 
+            #     print("Blochain initialization failed")
+            blockchain.init()
         # Optionally, you might want to handle initialization logic here.
         #checks for initial block to verify blokchain is setup properly
 

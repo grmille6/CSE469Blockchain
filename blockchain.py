@@ -18,7 +18,7 @@ class State(Enum):
 class Blockchain:
 
     RECORD_SIZE = 144
-    def __init__(self):
+    def init(self):
         """
         Initializes the blockchain and creates the INITIAL block if necessary.
         """
@@ -27,6 +27,7 @@ class Blockchain:
         if not os.path.isfile(file_path):
             self._write_starting_block()
         elif self._check_for_initial():
+            print("Blockchain file found with INITIAL block.")
             self.previous_hash = self._get_last_hash()
         else:
             # if the file exists but there's no initial block
@@ -44,8 +45,9 @@ class Blockchain:
                 if f.read(): #File has content
                     return
         except FileNotFoundError:
-            pass #File does not exist, will be created
-        
+            print("Blockchain file not found.", end="")
+            pass
+
             # Define initial block values
             previous_hash = b'\x00' * 32  # 32 bytes of zeros for initial block
             timestamp = datetime.now(timezone.utc).timestamp() #timestamp = 0
@@ -63,7 +65,7 @@ class Blockchain:
 
             # Write the initial block to the file
             with open(file_path, 'wb') as f:
-                print("created")
+                print(" Created INITIAL block.")
                 f.write(block_data)
 
     def _read_blocks(self):
